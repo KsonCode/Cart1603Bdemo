@@ -25,7 +25,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     private Context mContext;
     private List<CartBean.DataBean> cartList;
-    private CartAllCheckboxListener cartAllCheckboxListener;
+    private CartAllCheckboxListener allCheckboxListener;
 
     public CartAdapter(Context context, List<CartBean.DataBean> list) {
         mContext = context;
@@ -33,9 +33,16 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     }
 
+    public void addPageData(List<CartBean.DataBean> list){
+        if (cartList!=null){
+            cartList.addAll(list);
+            notifyDataSetChanged();
+        }
+    }
+
     //暴露给购物车页面进行回调
     public void setCartAllCheckboxListener(CartAllCheckboxListener cartAllCheckboxListener) {
-        this.cartAllCheckboxListener = cartAllCheckboxListener;
+        allCheckboxListener = cartAllCheckboxListener;
     }
 
     @NonNull
@@ -76,39 +83,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
 
         }
-
-//        for (int i = 0; i < bean.getList().size(); i++) {
-//            if (!bean.getList().get(i).isChecked()) {
-//                holder.checkBox.setChecked(false);
-//                break;
-//            } else {
-//                holder.checkBox.setChecked(true);
-//            }
-//        }
-//
-//        holder.checkBox.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (holder.checkBox.isChecked()) {
-//                    bean.setChecked(true);
-//                    for (int i = 0; i < bean.getList().size(); i++) {
-//                        bean.getList().get(i).setChecked(true);
-//                        bean.getList().set(i, bean.getList().get(i));
-//                    }
-//
-//                } else {
-//                    bean.setChecked(false);
-//                    for (int i = 0; i < bean.getList().size(); i++) {
-//                        bean.getList().get(i).setChecked(false);
-//                        bean.getList().set(i, bean.getList().get(i));
-//                    }
-//                }
-//                cartList.set(position, bean);
-//                System.out.println("ische:" + cartList.get(position).isChecked());
-//                productAdapter.notifyDataSetChanged();
-//            }
-//        });
-
         //设置商家的checkbox点击事件，逻辑：勾选则子列表全部勾选，取消则全部取消
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,14 +105,22 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
                 notifyDataSetChanged();
 
-                if (cartAllCheckboxListener!=null){
-                    cartAllCheckboxListener.notifyAllCheckboxStatus();
+                if (allCheckboxListener!=null){
+                    allCheckboxListener.notifyAllCheckboxStatus();
                 }
 
             }
         });
     }
 
+
+    /**
+     * 暴露修改之后的最新的集合数据
+     * @return
+     */
+    public List<CartBean.DataBean> getCartList() {
+        return cartList;
+    }
 
     @Override
     public int getItemCount() {
@@ -152,8 +134,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     public void notifyParent() {
 
         notifyDataSetChanged();
-        if (cartAllCheckboxListener!=null){
-            cartAllCheckboxListener.notifyAllCheckboxStatus();
+        if (allCheckboxListener!=null){
+            allCheckboxListener.notifyAllCheckboxStatus();
         }
 
     }

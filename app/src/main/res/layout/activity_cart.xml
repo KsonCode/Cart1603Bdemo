@@ -28,12 +28,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <TextView
+            android:id="@+id/totalpriceTv"
             android:textColor="#ffffff"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/allCheckbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="总价"/>
+            android:text="总价:"/>
 
         <Button
             android:id="@+id/buy"

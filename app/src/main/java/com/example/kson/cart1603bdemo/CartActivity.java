@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kson.cart1603bdemo.adapter.CartAdapter;
@@ -22,13 +23,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.LinkedTransferQueue;
 
-public class CartActivity extends AppCompatActivity implements IcartView,CartAllCheckboxListener{
+public class CartActivity extends AppCompatActivity implements IcartView, CartAllCheckboxListener {
 
     private CartPresenter cartPresenter;
     private XRecyclerView xRecyclerView;
     private CartAdapter cartAdapter;
     private List<CartBean.DataBean> list;
     private CheckBox allCheckbox;
+    private TextView totalPriceTv;
+    private int page = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,18 +53,35 @@ public class CartActivity extends AppCompatActivity implements IcartView,CartAll
         allCheckbox = findViewById(R.id.allCheckbox);
         //设置线性布局管理器，listview的列表样式
         xRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        totalPriceTv = findViewById(R.id.totalpriceTv);
 
+        xRecyclerView.setLoadingMoreEnabled(true);//支持加载更多
 
-        xRecyclerView.addItemDecoration(new SpaceItemDecoration(10));
-        cartAdapter = new CartAdapter(this,list);
-        cartAdapter.setCartAllCheckboxListener(this);
-
-        allCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onRefresh() {//下拉刷新
 
-                if (isChecked){//
-                    if (list!=null&&list.size()>0){
+                page = 1;
+                loadData();//子线程
+//                xRecyclerView.refreshComplete();
+            }
+
+            @Override
+            public void onLoadMore() {//加载更多
+                page++;
+
+                loadData();
+//                xRecyclerView.loadMoreComplete();
+
+            }
+        });
+
+        //设置点击事件
+        allCheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (allCheckbox.isChecked()) {//
+                    if (list != null && list.size() > 0) {
                         for (int i = 0; i < list.size(); i++) {
                             list.get(i).setSelected(true);
                             for (int i1 = 0; i1 < list.get(i).getList().size(); i1++) {
@@ -70,8 +90,9 @@ public class CartActivity extends AppCompatActivity implements IcartView,CartAll
                         }
 
                     }
-                }else{
-                    if (list!=null&&list.size()>0){
+
+                } else {
+                    if (list != null && list.size() > 0) {
                         for (int i = 0; i < list.size(); i++) {
                             list.get(i).setSelected(false);
                             for (int i1 = 0; i1 < list.get(i).getList().size(); i1++) {
@@ -80,54 +101,46 @@ public class CartActivity extends AppCompatActivity implements IcartView,CartAll
                         }
 
                     }
+//                    totalPrice = 0;
                 }
 
                 cartAdapter.notifyDataSetChanged();//全部刷新
+
+                totalPrice();
 
             }
         });
 
 
+    }
 
-//        allCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked){
-//                    for (CartBean.DataBean bean : list) {
-//                        bean.setChecked(true);
-//                        for (CartBean.DataBean.ListBean listBean : bean.getList()) {
-//                            listBean.setChecked(true);
-//                        }
-//                    }
-//                }else{
-//                    for (CartBean.DataBean bean : list) {
-//                        bean.setChecked(false);
-//                        for (CartBean.DataBean.ListBean listBean : bean.getList()) {
-//                            listBean.setChecked(false);
-//                        }
-//                    }
-//                }
-//                cartAdapter.notifyDataSetChanged();
-//            }
-//        });
+    /**
+     * 初始化数据
+     */
+    private void initData() {
+
+        loadData();
+
+
 
     }
 
     /**
-     *  初始化数据
+     * 请求数据
      */
-    private void initData() {
-        HashMap<String,String> params = new HashMap<>();
-        params.put("uid","71");
+    private void loadData() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("uid", "71");
+        params.put("page",page+"");
 
         cartPresenter = new CartPresenter(this);
         cartPresenter.getCarts(params, Constants.GETCARTS);
-
-
     }
+
 
     /**
      * 刷新购物车列表
+     *
      * @param cartBean
      */
     @Override
@@ -135,25 +148,34 @@ public class CartActivity extends AppCompatActivity implements IcartView,CartAll
 
         // TODO: 2018/8/21 展示列表数据
 
-        if (cartBean!=null&&cartBean.getData()!=null){
+        if (cartBean != null && cartBean.getData() != null) {
 
-            list = cartBean.getData();
 
-            cartAdapter = new CartAdapter(this,list);
+            if (page==1){
 
-            xRecyclerView.setAdapter(cartAdapter);
+                list = cartBean.getData();
+                cartAdapter = new CartAdapter(this, list);
 
-//            cartAdapter.notifyDataSetChanged();
+                xRecyclerView.setAdapter(cartAdapter);
+                xRecyclerView.refreshComplete();//把下拉刷新的进度view隐藏掉
+            }else {
+                if (cartAdapter!=null){
+                    cartAdapter.addPageData(cartBean.getData());
+                }
+                xRecyclerView.loadMoreComplete();//
+            }
+
+
+            cartAdapter.setCartAllCheckboxListener(this);
 
         }
-
-
 
 
     }
 
     /**
      * 失败提示
+     *
      * @param msg
      */
     @Override
@@ -164,6 +186,7 @@ public class CartActivity extends AppCompatActivity implements IcartView,CartAll
 
     /**
      * 去结算
+     *
      * @param view
      */
     public void buy(View view) {
@@ -176,24 +199,59 @@ public class CartActivity extends AppCompatActivity implements IcartView,CartAll
     @Override
     public void notifyAllCheckboxStatus() {
 
-        for (int i = 0; i < list.size(); i++) {
-            //一级列表状态
-            if (!list.get(i).isSelected()){
-                allCheckbox.setChecked(false);
-                break;
-            }else{
-                allCheckbox.setChecked(true);
-            }
+        StringBuilder stringBuilder = new StringBuilder();
+        if (cartAdapter != null) {
+            for (int i = 0; i < cartAdapter.getCartList().size(); i++) {
 
-            for (int i1 = 0; i1 < list.get(i).getList().size(); i1++) {
-                if (!list.get(i).getList().get(i1).isSelected()){
-                    allCheckbox.setChecked(false);
-                    break;
+                stringBuilder.append(cartAdapter.getCartList().get(i).isSelected());
+
+                for (int i1 = 0; i1 < cartAdapter.getCartList().get(i).getList().size(); i1++) {
+
+                    stringBuilder.append(cartAdapter.getCartList().get(i).getList().get(i1).isSelected());
+
                 }
             }
-
-
         }
+
+        System.out.println("sb=====" + stringBuilder.toString());
+
+        //truetruefalsetruefalse
+
+        if (stringBuilder.toString().contains("false")) {
+            allCheckbox.setChecked(false);
+//            totalPrice = 0;
+        } else {
+            allCheckbox.setChecked(true);
+        }
+
+        totalPrice();//计算总价
+
+    }
+
+
+    /**
+     * 计算总价
+     */
+    private void totalPrice() {
+
+        double totalPrice = 0;
+
+        for (int i = 0; i < cartAdapter.getCartList().size(); i++) {
+
+            for (int i1 = 0; i1 < cartAdapter.getCartList().get(i).getList().size(); i1++) {
+
+                //计算总价的关键代码块
+                if (cartAdapter.getCartList().get(i).getList().get(i1).isSelected()) {
+                    CartBean.DataBean.ListBean listBean = cartAdapter.getCartList().get(i).getList().get(i1);
+                    totalPrice += listBean.getBargainPrice() * listBean.getTotalNum();
+                }
+
+
+            }
+        }
+        totalPriceTv.setText("总价：¥"+totalPrice);
+
+
 
     }
 }

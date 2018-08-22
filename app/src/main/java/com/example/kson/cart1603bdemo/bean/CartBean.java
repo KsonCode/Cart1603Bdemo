@@ -97,6 +97,16 @@ public class CartBean {
                 isSelected = selected;
             }
 
+            private int totalNum = 1;//加减器的数量
+
+            public int getTotalNum() {
+                return totalNum;
+            }
+
+            public void setTotalNum(int totalNum) {
+                this.totalNum = totalNum;
+            }
+
             /**
              * bargainPrice : 3455
              * createtime : 2017-10-14T21:38:26
@@ -112,24 +122,24 @@ public class CartBean {
              * title : 小米（MI） 小米MIX2 手机 黑色 全网通 (6GB+64GB)【标配版】
              */
 
-            private String bargainPrice;
+            private double bargainPrice;
             private String createtime;
             private String detailUrl;
             private String images;
             private int num;
             private int pid;
-            private String price;
+            private double price;
             private int pscid;
             private int selected;
             private int sellerid;
             private String subhead;
             private String title;
 
-            public String getBargainPrice() {
+            public double getBargainPrice() {
                 return bargainPrice;
             }
 
-            public void setBargainPrice(String bargainPrice) {
+            public void setBargainPrice(double bargainPrice) {
                 this.bargainPrice = bargainPrice;
             }
 
@@ -173,11 +183,11 @@ public class CartBean {
                 this.pid = pid;
             }
 
-            public String getPrice() {
+            public double getPrice() {
                 return price;
             }
 
-            public void setPrice(String price) {
+            public void setPrice(double price) {
                 this.price = price;
             }
 

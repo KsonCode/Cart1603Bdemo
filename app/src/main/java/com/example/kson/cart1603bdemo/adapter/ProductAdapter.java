@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.kson.cart1603bdemo.R;
 import com.example.kson.cart1603bdemo.bean.CartBean;
+import com.example.kson.cart1603bdemo.widget.MyJIaJianView;
 
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.CartView
 
         final CartBean.DataBean.ListBean bean = listBeanList.get(position);
 
-        holder.priceTv.setText("优惠价：¥" + bean.getPrice());
+        holder.priceTv.setText("优惠价：¥" + bean.getBargainPrice());
         holder.titleTv.setText(bean.getTitle());
         String[] imgs = bean.getImages().split("\\|");//分割images，得到图片数组
         //校验数组大小是否>0，防止空指针
@@ -71,6 +72,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.CartView
             holder.productIv.setImageResource(R.mipmap.ic_launcher);
         }
         holder.checkBox.setChecked(bean.isSelected());
+
+        holder.myJIaJianView.setNumEt(bean.getTotalNum());
+
+        holder.myJIaJianView.setJiaJianListener(new MyJIaJianView.JiaJianListener() {
+            @Override
+            public void getNum(int num) {
+                bean.setTotalNum(num);
+                if (checkListener!=null){
+                    checkListener.notifyParent();//通知一级列表适配器刷新
+                }
+            }
+        });
+
+
 
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,12 +128,17 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.CartView
         private TextView titleTv, priceTv;
         private ImageView productIv;
 
+        private MyJIaJianView myJIaJianView;
+
+
         public CartViewHolder(View itemView) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.productCheckbox);
             titleTv = itemView.findViewById(R.id.title);
             priceTv = itemView.findViewById(R.id.price);
             productIv = itemView.findViewById(R.id.product_icon);
+            myJIaJianView = itemView.findViewById(R.id.jiajianqi);
+
         }
     }
 }

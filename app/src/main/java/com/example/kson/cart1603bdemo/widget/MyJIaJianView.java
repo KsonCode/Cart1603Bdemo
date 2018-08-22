@@ -1,5 +1,6 @@
 package com.example.kson.cart1603bdemo.widget;
 
+import android.app.IntentService;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -47,13 +48,20 @@ public class MyJIaJianView extends LinearLayout{
         jiaTv = view.findViewById(R.id.jia);
         numEt = view.findViewById(R.id.num);
 
+
+
         numEt.setText(num+"");
+
+
 
         jiaTv.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 num++;
                 numEt.setText(num+"");
+                if (jiaJianListener!=null){
+                    jiaJianListener.getNum(num);
+                }
             }
         });
         jiantv.setOnClickListener(new OnClickListener() {
@@ -67,11 +75,34 @@ public class MyJIaJianView extends LinearLayout{
 
                 numEt.setText(num+"");
 
+                if (jiaJianListener!=null){
+                    jiaJianListener.getNum(num);
+                }
+
+
 
             }
         });
 
     }
 
+    /**
+     * 设置editext数量
+     * @param
+     */
+    public void setNumEt(int n) {
+        numEt.setText(n+"");
+        num = Integer.parseInt(numEt.getText().toString());
+    }
+
+    private JiaJianListener jiaJianListener;
+
+    public void setJiaJianListener(JiaJianListener jiaJianListener) {
+        this.jiaJianListener = jiaJianListener;
+    }
+
+    public interface JiaJianListener{
+        void getNum(int num);
+    }
 
 }

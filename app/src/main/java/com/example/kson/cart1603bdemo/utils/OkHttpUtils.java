@@ -39,30 +39,6 @@ public class OkHttpUtils {
         okHttpClient = new OkHttpClient.Builder()
 //                .addInterceptor(new MyInterceptor())//添加拦截器
                 .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
                 .writeTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(5, TimeUnit.SECONDS)
                 .connectTimeout(5,TimeUnit.SECONDS)
@@ -149,22 +125,22 @@ public class OkHttpUtils {
                 .url(url).post(formBodyBuilder.build()).build();
 
 
-        Call call = okHttpClient.newCall(request);
-        try {
-            System.exit(0);
-            Response response = call.execute();
-//            call.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-
-        }
-        Call call2 = okHttpClient.newCall(request);
-        try {
-            call2.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        Call call = okHttpClient.newCall(request);
+//        try {
+//            System.exit(0);
+//            Response response = call.execute();
+////            call.execute();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }finally {
+//
+//        }
+//        Call call2 = okHttpClient.newCall(request);
+//        try {
+//            call2.execute();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
 
 

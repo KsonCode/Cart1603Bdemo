@@ -40,6 +40,16 @@ public class CartBean {
     }
 
     public static class DataBean {
+        private boolean isSelected = false;
+
+        public boolean isSelected() {
+            return isSelected;
+        }
+
+        public void setSelected(boolean selected) {
+            isSelected = selected;
+        }
+
         /**
          * list : [{"bargainPrice":3455,"createtime":"2017-10-14T21:38:26","detailUrl":"https://item.m.jd.com/product/12224420750.html?utm_source=androidapp&utm_medium=appshare&utm_campaign=t_335139774&utm_term=QQfriends","images":"https://m.360buyimg.com/n0/jfs/t9106/106/1785172479/537280/253bc0ab/59bf78a7N057e5ff7.jpg!q70.jpg|https://m.360buyimg.com/n0/jfs/t9106/106/1785172479/537280/253bc0ab/59bf78a7N057e5ff7.jpg!q70.jpg|https://m.360buyimg.com/n0/jfs/t8461/5/1492479653/68388/7255e013/59ba5e84N91091843.jpg!q70.jpg|https://m.360buyimg.com/n0/jfs/t8461/5/1492479653/68388/7255e013/59ba5e84N91091843.jpg!q70.jpg|https://m.360buyimg.com/n0/jfs/t8803/356/1478945529/489755/2a163ace/59ba5e84N7bb9a666.jpg!q70.jpg","num":1,"pid":51,"price":555,"pscid":39,"selected":0,"sellerid":7,"subhead":"【现货新品抢购】全面屏2.0震撼来袭，骁龙835处理器，四曲面陶瓷机","title":"小米（MI） 小米MIX2 手机 黑色 全网通 (6GB+64GB)【标配版】"}]
          * sellerName : 商家7
@@ -75,6 +85,18 @@ public class CartBean {
         }
 
         public static class ListBean {
+
+            //标识位，用于记录当前bean对象的状态，是否选中的状态
+            private boolean isSelected = false;
+
+            public boolean isSelected() {
+                return isSelected;
+            }
+
+            public void setSelected(boolean selected) {
+                isSelected = selected;
+            }
+
             /**
              * bargainPrice : 3455
              * createtime : 2017-10-14T21:38:26
@@ -90,7 +112,7 @@ public class CartBean {
              * title : 小米（MI） 小米MIX2 手机 黑色 全网通 (6GB+64GB)【标配版】
              */
 
-            private int bargainPrice;
+            private String bargainPrice;
             private String createtime;
             private String detailUrl;
             private String images;
@@ -103,11 +125,11 @@ public class CartBean {
             private String subhead;
             private String title;
 
-            public int getBargainPrice() {
+            public String getBargainPrice() {
                 return bargainPrice;
             }
 
-            public void setBargainPrice(int bargainPrice) {
+            public void setBargainPrice(String bargainPrice) {
                 this.bargainPrice = bargainPrice;
             }
 

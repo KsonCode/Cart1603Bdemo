@@ -1,5 +1,6 @@
 package com.example.kson.cart1603bdemo;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +21,6 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity implements IcartView{
 
-    private CartPresenter cartPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,31 +34,31 @@ public class MainActivity extends AppCompatActivity implements IcartView{
      */
     public void add(View view) {
 
-        HashMap<String,String> params = new HashMap<>();
-        params.put("uid","71");
-        params.put("pid","100");
-        OkHttpUtils.getInstance().postData(Constants.ADD_CART, params, new RequestCallback() {
-            @Override
-            public void failure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) {
-                try {
-                    final String result = response.body().string();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
+//        HashMap<String,String> params = new HashMap<>();
+//        params.put("uid","71");
+//        params.put("pid","100");
+//        OkHttpUtils.getInstance().postData(Constants.ADD_CART, params, new RequestCallback() {
+//            @Override
+//            public void failure(Call call, IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) {
+//                try {
+//                    final String result = response.body().string();
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        });
 
     }
 
@@ -70,26 +70,27 @@ public class MainActivity extends AppCompatActivity implements IcartView{
 
 
 
-        HashMap<String,String> params = new HashMap<>();
-        params.put("uid","71");
+//        HashMap<String,String> params = new HashMap<>();
+//        params.put("uid","71");
+//
+//        OkHttpUtils.getInstance().postData(Constants.GETCARTS, params, new RequestCallback() {
+//            @Override
+//            public void failure(Call call, IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) {
+//                try {
+//                    String jsonResult = response.body().string();
+//                    parseCarts(jsonResult);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
-        OkHttpUtils.getInstance().postData(Constants.GETCARTS, params, new RequestCallback() {
-            @Override
-            public void failure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) {
-                try {
-                    String jsonResult = response.body().string();
-                    parseCarts(jsonResult);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
+        startActivity(new Intent(this,CartActivity.class));
 
     }
 

@@ -1,5 +1,6 @@
 package com.example.kson.cart1603bdemo.model;
 
+import android.os.Handler;
 import android.text.TextUtils;
 
 import com.example.kson.cart1603bdemo.bean.CartBean;
@@ -20,6 +21,8 @@ import okhttp3.Response;
  * Description:
  */
 public class CartModel {
+
+    Handler handler =new Handler();
 
     /**
      * 请求购物车数据
@@ -61,10 +64,16 @@ public class CartModel {
      * @param jsonResult
      * @param cartCallback
      */
-    private void parseResult(String jsonResult, CartCallback cartCallback) {
-        CartBean cartBean = new Gson().fromJson(jsonResult, CartBean.class);
+    private void parseResult(String jsonResult, final CartCallback cartCallback) {
+        final CartBean cartBean = new Gson().fromJson(jsonResult, CartBean.class);
         if (cartCallback != null && cartBean != null) {//代码规范，代码优化
-            cartCallback.success(cartBean);
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    cartCallback.success(cartBean);
+                }
+            });
         }
 
 
